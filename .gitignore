@@ -1,0 +1,8 @@
+.DS_Store
+plugins/spokeline/.claude-plugin/types/
+plugins/spokeline/tsconfig.json
+ears-windows/bin/
+ears-windows/obj/
+ears-windows-tests/bin/
+ears-windows-tests/obj/
+plugins/spokeline/bin/windows/

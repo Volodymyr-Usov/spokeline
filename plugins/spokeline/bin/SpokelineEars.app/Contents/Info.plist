@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleIdentifier</key><string>dev.spokeline.ears</string>
+  <key>CFBundleName</key><string>Spokeline Ears</string>
+  <key>CFBundleDisplayName</key><string>Spokeline Ears</string>
+  <key>CFBundleExecutable</key><string>SpokelineEars</string>
+  <key>CFBundlePackageType</key><string>APPL</string>
+  <key>CFBundleShortVersionString</key><string>0.1.0</string>
+  <key>CFBundleVersion</key><string>0.1.0</string>
+  <key>LSMinimumSystemVersion</key><string>13.0</string>
+  <key>LSUIElement</key><true/>
+  <key>NSMicrophoneUsageDescription</key><string>Spokeline listens while you hold the push-to-talk key, or for the wake phrase in hands-free mode, so you can talk to Claude Code. Audio never leaves this Mac.</string>
+  <key>NSSpeechRecognitionUsageDescription</key><string>Spokeline turns what you say into text on this Mac (on-device recognition only) and sends it to your Claude Code chat.</string>
+</dict>
+</plist>

@@ -1,0 +1,15 @@
+{
+  "name": "spokeline",
+  "owner": {
+    "name": "Spokeline",
+    "url": "https://spokeline.dev"
+  },
+  "description": "Spokeline: talk to Claude Code and hear short spoken answers back. https://spokeline.dev",
+  "plugins": [
+    {
+      "name": "spokeline",
+      "source": "./plugins/spokeline",
+      "description": "Talk to Claude Code hands-free and hear short spoken answers back"
+    }
+  ]
+}

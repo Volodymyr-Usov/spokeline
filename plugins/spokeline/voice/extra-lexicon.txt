@@ -1,0 +1,103 @@
+api A p ˈ i ˈ I
+args ˈ ɑ ɹ k s
+backend b ˈ æ k ˈ ɛ n d
+changelog ʧ ˈ A n ʤ l ˈ ɔ ɡ
+cli s ˈ i ˈ ɛ l ˈ I
+config k ˈ ɑ n f ˈ ɪ ɡ
+configs k ˈ ɑ n f ˈ ɪ ɡ z
+cpu s ˈ i p ˈ i j ˈ u
+css s ˈ i ˈ ɛ s ˈ ɛ s
+dir d ˈ ɪ ɹ
+dotenv d ˈ ɑ t ˈ i ˈ ɛ n v ˈ i
+eslint ˈ i ˈ ɛ s l ˈ ɪ n t
+frontend f ɹ ˈ ʌ n t ˈ ɛ n d
+frontmatter f ɹ ˈ ʌ n t m ˈ æ ɾ ə ɹ
+github ɡ ˈ ɪ t h ˈ ʌ b
+gitlab ɡ ˈ ɪ t l ˈ æ b
+gpt ʤ ˈ i p ˈ i t ˈ i
+gpu ʤ ˈ i p ˈ i j ˈ u
+html ˈ A ʧ t ˈ i ˈ ɛ m ˈ ɛ l
+http ˈ A ʧ t ˈ i t ˈ i p ˈ i
+https ˈ A ʧ t ˈ i t ˈ i p ˈ i ˈ ɛ s
+impl ˈ ɪ m p
+js ʤ ˈ A ˈ ɛ s
+json ʤ ˈ A s ᵊ n
+jsx ʤ ˈ A ˈ ɛ s ˈ ɛ k s
+jwt ʤ ˈ A d ˈ ʌ b ᵊ l j u t ˈ i
+k8s k ˈ A ˈ A t s
+llm ˈ ɛ l ˈ ɛ l ˈ ɛ m
+localhost l ˈ O k ə l h ˈ O s t
+macbook m ˈ æ k b ˈ ʊ k
+macos m ˈ æ k ˈ O ˈ ɛ s
+mcp ˈ ɛ m s ˈ i p ˈ i
+md ˈ ɛ m d ˈ i
+monorepo m ˈ ɑ n O ɹ ˈ i p ˌ O
+mysql m I s ˈ i k w ə l
+nextjs n ˈ ɛ k s t ʤ ˈ A ˈ ɛ s
+nodejs n ˈ O d ʤ ˈ A ˈ ɛ s
+npm ˈ ɛ n p ˈ i ˈ ɛ m
+npx ˈ ɛ n p ˈ i ˈ ɛ k s
+oauth ˈ O ˈ ɔ θ
+openai ˈ O p ᵊ n A ˈ I
+param p ˈ ɑ ɹ ˈ æ m
+params p ˈ ɑ ɹ ˈ æ m z
+pnpm p ˈ i ˈ ɛ n p ˈ i ˈ ɛ m
+postgres p ˈ O s t ɡ ɹ ˈ æ s
+pr p ˈ i ˈ ɑ ɹ
+prs p ˈ i ˈ W ə ɹ z
+pytest p ˈ I t ˈ ɛ s t
+readme ɹ ˈ i d m ˌ i
+redis ɹ ˈ ɛ d ɪ z
+refactoring ɹ ˌ A f ˈ æ k t ə ɹ ɪ ŋ
+repos ɹ ˈ i p ˈ O z
+sdk ˈ ɛ s d ˈ i k ˈ A
+spokeline s p ˈ O k l ˈ I n
+sqlite s ˈ i k w ə l l ˈ I t
+src s ˈ ɔ ɹ s
+ssd ˈ ɛ s ˈ ɛ s d ˈ i
+stderr s t ˈ æ n d ə ɹ d ˈ ɛ ɹ ə ɹ
+stdout s t ˈ æ n d ə ɹ d ˈ W t
+swiftui s w ˈ ɪ f t j ˈ u ˈ I
+todo t u d ˈ u
+todos t u d ˈ u z
+toml t ˈ ɑ m ˈ ɛ l
+ts t ˈ i ˈ ɛ s
+tsconfig t ˈ i ˈ ɛ s k ˈ ɑ n f ˈ ɪ ɡ
+tsx t ˈ i ˈ ɛ s ˈ ɛ k s
+ui j ˈ u ˈ I
+url j ˈ u ˈ ɑ ɹ ˈ ɛ l
+urls j ˈ u ˈ ɑ ɹ ˈ ɛ l z
+usb j ˈ u ˈ ɛ s b ˈ i
+utils j u t ˈ ɪ l z
+uuid j ˈ u j ˈ u ˈ I d ˈ i
+ux j ˈ u ˈ ɛ k s
+venv v ˈ i ˈ ɛ n v
+vercel v ˈ ɜ ɹ s ˈ ɛ l
+vscode v ˈ i ˈ ɛ s k ˈ O d
+webhook w ˈ ɛ b h ˈ ʊ k
+webhooks w ˈ ɛ b h ˈ ʊ k s
+webpack w ˈ ɛ b p ˈ æ k
+xcode ˈ ɛ k s k ˈ O d
+yaml j ˈ æ m ˈ ɛ l
+that's ð æ t s
+what's w ˌ ʌ t s
+here's h ˈ ɪ ɹ z
+where's w ˌ ɛ ɹ z
+how's h ˌ W z
+when's w ˌ ɛ n z
+why's w ˌ I z
+that'll ð æ t ə l
+that'd ð æ t ə d
+there'll ð ɛ ɹ ə l
+what'll w ˌ ʌ t ə l
+who'll h ˌ u ə l
+should've ʃ ˌ ʊ d ə v
+would've w ʊ d ə v
+must've m ˈ ʌ s t ə v
+here're h ˈ ɪ ɹ ɚ
+there're ð ɛ ɹ ɚ
+what're w ˌ ʌ t ɚ
+who're h ˌ u ɚ
+who've h ˌ u ə v
+today's t ə d ˈ A z
+claude's k l ˈ ɔ d z

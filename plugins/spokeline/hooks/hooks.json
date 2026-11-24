@@ -1,0 +1,20 @@
+{
+  "description": "Spokeline: voice in and spoken answers out",
+  "modules": ["./register.js"],
+  "hooks": {
+    "PermissionRequest": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_DATA}/spokeline-hook.exe",
+            "args": ["--permission-hook"],
+            "timeout": 140,
+            "onFailure": "continue"
+          }
+        ]
+      }
+    ]
+  }
+}

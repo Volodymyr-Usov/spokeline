@@ -1,0 +1,105 @@
+{
+  "name": "spokeline",
+  "displayName": "Spokeline",
+  "version": "0.1.0",
+  "description": "Talk to Claude Code hands-free and hear short spoken answers back. Works in the terminal, the VS Code panel and the desktop app.",
+  "author": { "name": "Spokeline", "url": "https://spokeline.dev" },
+  "homepage": "https://spokeline.dev",
+  "repository": "https://github.com/Volodymyr-Usov/spokeline",
+  "license": "MIT",
+  "keywords": ["voice", "speech", "hands-free", "accessibility"],
+  "userConfig": {
+    "listen": {
+      "type": "string",
+      "title": "Listening mode",
+      "description": "off: never use the microphone. push_to_talk: hold the hotkey while you speak. hands_free: say the wake phrase, then your request.",
+      "options": ["off", "push_to_talk", "hands_free"],
+      "default": "hands_free"
+    },
+    "hotkey": {
+      "type": "string",
+      "title": "Push-to-talk key",
+      "description": "Hold this key while you speak. Examples: ctrl+option+space, cmd+shift+s, ctrl+option+v.",
+      "default": "ctrl+option+v"
+    },
+    "wake_phrase": {
+      "type": "string",
+      "title": "Wake phrases",
+      "description": "In hands-free mode, start with one of these (after a short pause), then your request. Separate several phrases with commas.",
+      "default": "claude, hey claude, ok claude, anthropic, hey spokeline"
+    },
+    "barge_in": {
+      "type": "boolean",
+      "title": "Interrupt by voice",
+      "description": "In hands-free mode, saying a wake phrase while Spokeline is talking stops it and starts listening. Uses the Mac's echo cancellation, like FaceTime.",
+      "default": true
+    },
+    "pause_seconds": {
+      "type": "number",
+      "title": "Seconds of silence before sending",
+      "description": "How long Spokeline waits after you stop talking before it sends what you said. Raise it if you get cut off; lower it for faster replies.",
+      "default": 3,
+      "min": 1,
+      "max": 8
+    },
+    "language": {
+      "type": "string",
+      "title": "Speech language",
+      "description": "The language you speak, as a code such as en-US, en-GB, de-DE or uk-UA. Empty means your Mac's language.",
+      "default": ""
+    },
+    "speak_answers": {
+      "type": "boolean",
+      "title": "Speak answers",
+      "description": "Read a short version of Claude's answer aloud.",
+      "default": true
+    },
+    "speak_when": {
+      "type": "string",
+      "title": "When to speak",
+      "description": "voice: only answers to requests you spoke. always: every answer in this chat.",
+      "options": ["voice", "always"],
+      "default": "voice"
+    },
+    "summary": {
+      "type": "string",
+      "title": "How answers are shortened",
+      "description": "smart: a small, fast Claude model rewrites the answer into 1-3 spoken sentences (uses a little of your plan). simple: no model call, just drop code, paths, tables and links.",
+      "options": ["smart", "simple"],
+      "default": "smart"
+    },
+    "natural_voice": {
+      "type": "string",
+      "title": "Natural voice",
+      "description": "The human-sounding voice that runs on this Mac (downloaded once, about 350 MB). American: heart, bella, nicole, sarah, michael, adam, puck. British: emma, isabella, george, fable. off: use the built-in macOS voice.",
+      "options": ["heart", "bella", "nicole", "sarah", "michael", "adam", "puck", "emma", "isabella", "george", "fable", "off"],
+      "default": "heart"
+    },
+    "voice": {
+      "type": "string",
+      "title": "Built-in macOS voice",
+      "description": "The exact name of a system voice, such as Samantha or Daniel. Empty means your Mac's default voice.",
+      "default": ""
+    },
+    "confirm_before_send": {
+      "type": "boolean",
+      "title": "Check before sending",
+      "description": "Put what you said into the input box first and wait for you to say 'send' or 'cancel'.",
+      "default": false
+    },
+    "voice_approvals": {
+      "type": "boolean",
+      "title": "Approve by voice",
+      "description": "When Claude asks for permission, read the request aloud and accept 'yes' or 'no' by voice. With no answer, the normal permission box appears.",
+      "default": true
+    },
+    "approval_wait_seconds": {
+      "type": "number",
+      "title": "Seconds to wait for a spoken yes or no",
+      "description": "After this, the normal permission box appears.",
+      "default": 20,
+      "min": 5,
+      "max": 120
+    }
+  }
+}
