@@ -1,7 +1,7 @@
 {
   "name": "spokeline",
   "displayName": "Spokeline",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Talk to Claude Code hands-free and hear short spoken answers back. Works in the terminal, the VS Code panel and the desktop app.",
   "author": { "name": "Spokeline", "url": "https://spokeline.dev" },
   "homepage": "https://spokeline.dev",
@@ -26,7 +26,7 @@
       "type": "string",
       "title": "Wake phrases",
       "description": "In hands-free mode, start with one of these (after a short pause), then your request. Separate several phrases with commas.",
-      "default": "claude, hey claude, ok claude, anthropic, hey spokeline"
+      "default": "claude, hey claude, ok claude, hey spokeline"
     },
     "barge_in": {
       "type": "boolean",
@@ -90,8 +90,8 @@
     "voice_approvals": {
       "type": "boolean",
       "title": "Approve by voice",
-      "description": "When Claude asks for permission, read the request aloud and accept 'yes' or 'no' by voice. With no answer, the normal permission box appears.",
-      "default": true
+      "description": "When Claude asks for permission while you talk to it by voice, read the request aloud and accept 'yes' or 'no' by voice. With no answer, the normal permission box appears. On Windows this needs Node.js.",
+      "default": false
     },
     "approval_wait_seconds": {
       "type": "number",

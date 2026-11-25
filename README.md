@@ -16,7 +16,8 @@ anywhere.
 - **Talk it through first.** A small, fast Claude model talks with you, asks what you mean when something is
   unclear, and sends the task to your chat only after you say yes. While Claude works, it tells you what is
   happening.
-- **Control by voice.** "Stop", "repeat", "mute", "yes" / "no" to a permission request, "that's all" to switch
+- **Control by voice.** "Stop", "repeat", "mute", "yes" / "no" to a permission request (after you switch on
+  **Approve by voice** in the settings), "that's all" to switch
   the microphone off, and "switch to *project*" to talk to another open chat (a chat in VS Code also comes
   to the front).
 

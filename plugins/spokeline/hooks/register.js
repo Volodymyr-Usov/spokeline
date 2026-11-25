@@ -49,6 +49,8 @@ import {
 const PLUGIN = 'spokeline'
 
 let opts = {}
+// The same as the wake_phrase default in plugin.json. "anthropic" still works when a person adds it.
+const DEFAULT_WAKE_PHRASES = 'claude, hey claude, ok claude, hey spokeline'
 let base = ''              // ~/.spokeline
 let sessionId = ''
 let cwd = ''
@@ -312,7 +314,6 @@ async function activate($) {
     // Windows: the helper program is downloaded at the first start; this runs again when it is here.
     if (isWin && !(await findWindowsHelper($))) return
     await makeDirs($, [base + '/sessions', base + '/inbox', base + '/permission', base + '/voice/tmp'])
-    await installHookProgram($)
 
     bestVoice = isWin ? '' : await pickVoice($)
     try { const st = JSON.parse(await $.fs.read(base + '/voice/status.json')); installing = st.state === 'downloading' } catch { installing = false }
@@ -368,7 +369,7 @@ async function writeConfig($, extra) {
     ...current,
     mode,
     hotkey: typeof opts.hotkey === 'string' && opts.hotkey ? opts.hotkey : 'ctrl+option+v',
-    wakePhrase: typeof opts.wake_phrase === 'string' && opts.wake_phrase ? opts.wake_phrase : 'claude, hey claude, ok claude, anthropic, hey spokeline',
+    wakePhrase: typeof opts.wake_phrase === 'string' && opts.wake_phrase ? opts.wake_phrase : DEFAULT_WAKE_PHRASES,
     language: typeof opts.language === 'string' ? opts.language : '',
     pauseSeconds: Math.max(1, Math.min(8, Number(opts.pause_seconds) || 3)),
     bargeIn: opts.barge_in !== false,
@@ -543,7 +544,6 @@ async function startEars($) {
 
 const WIN_EARS = { version: '0.1.0', sha256: 'a699f96d877585480f81fb173862ca366d6e41a2b85b3b38c68db98a7ba50809' }
 const WIN_EARS_URL = 'https://github.com/Volodymyr-Usov/spokeline/releases/download/ears-windows-' + WIN_EARS.version + '/SpokelineEars.exe'
-const HOOK_VERSION = '0.2.0'
 let isWin = false
 let pluginData = ''
 let winEars = ''              // where the Windows helper is on this PC
@@ -621,26 +621,6 @@ async function makeDirs($, dirs) {
   }
 }
 
-// Claude Code's permission hook (hooks/hooks.json) runs ${CLAUDE_PLUGIN_DATA}/spokeline-hook.exe on both
-// systems; we put the right program there. Missing at the very first start: the hook then fails harmlessly
-// ("onFailure": "continue") and the normal permission box appears.
-async function installHookProgram($) {
-  if (!pluginData || !pluginRoot) return
-  const dest = pluginData + '/spokeline-hook.exe'
-  const marker = pluginData + '/spokeline-hook.version'
-  // A new Windows helper is a new hook program too.
-  const version = isWin ? HOOK_VERSION + ' ' + earsProgram() : HOOK_VERSION
-  try {
-    if ((await $.fs.exists(dest)) && (await $.fs.exists(marker)) && (await $.fs.read(marker)).trim() === version) return
-    const r = isWin
-      ? await $.process.run([earsProgram(), '--copy-self', dest], { timeoutMs: 60000 })
-      : await $.process.run(['/bin/cp', earsProgram(), dest])
-    if (r.exitCode === 0) await $.fs.write(marker, version)
-    else $.ui.log('could not set up the permission hook: ' + (r.stderr || r.exitCode))
-  } catch (err) {
-    $.ui.log('could not set up the permission hook: ' + errText(err))
-  }
-}
 
 // ---------------------------------------------------------------- inbox
 
@@ -902,7 +882,7 @@ async function slashCommand($, args) {
       const lines = [
         'Spokeline ' + (ready ? 'is on' : 'is off in this session: ' + notReadyReason) + '.',
         'Listening: ' + mode.replace(/_/g, ' ') +
-          (mode === 'push_to_talk' ? ' (hold ' + hot + ' and speak)' : mode === 'hands_free' ? ' (start with "' + String(opts.wake_phrase || 'claude, anthropic').split(',').map(x => x.trim()).join('" or "') + '", then your request)' : ''),
+          (mode === 'push_to_talk' ? ' (hold ' + hot + ' and speak)' : mode === 'hands_free' ? ' (start with "' + String(opts.wake_phrase || DEFAULT_WAKE_PHRASES).split(',').map(x => x.trim()).join('" or "') + '", then your request)' : ''),
         'Speaking: ' + (muted || opts.speak_answers === false ? 'off' : opts.speak_when === 'always' ? 'every answer' : 'answers to spoken requests'),
         'Commands: /spokeline say <text> · talk <text> · helper <task> · helpers · stop · repeat · mute · unmute · here · listen off|ptt|handsfree · voice [install|<name>]',
       ]
@@ -1520,8 +1500,9 @@ async function checkInstall($) {
 
 // ---------------------------------------------------------------- spoken approvals
 //
-// Claude Code runs the plugin's PermissionRequest hook (bin/permission-hook) only when a permission box
-// would really be shown to the person. While you are talking by voice, that hook writes the request to
+// "Approve by voice" (setting voice_approvals, off unless the person switches it on). Claude Code runs the
+// plugin's PermissionRequest hook (hooks/permission-hook.sh on the Mac, hooks/permission-hook.mjs on Windows)
+// only when a permission box would really be shown to the person. While you are talking by voice, that hook writes the request to
 // ~/.spokeline/permission/<chat id>.json and waits a few seconds for your spoken yes or no, which we write
 // to ~/.spokeline/permission/<chat id>.answer. No answer: the normal box appears.
 
@@ -1531,7 +1512,7 @@ function permissionPath() { return base + '/permission/' + sessionId + '.json' }
 function answerPath() { return base + '/permission/' + sessionId + '.answer' }
 
 function voiceFlow() {
-  return lastPromptByVoice && !muted && mode !== 'off' && opts.voice_approvals !== false && opts.speak_answers !== false
+  return lastPromptByVoice && !muted && mode !== 'off' && opts.voice_approvals === true && opts.speak_answers !== false
 }
 
 async function checkPermission($) {

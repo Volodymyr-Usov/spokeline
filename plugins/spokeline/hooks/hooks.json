@@ -1,6 +1,8 @@
 {
   "description": "Spokeline: voice in and spoken answers out",
-  "modules": ["./register.js"],
+  "modules": [
+    "./register.js"
+  ],
   "hooks": {
     "PermissionRequest": [
       {
@@ -8,8 +10,19 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_DATA}/spokeline-hook.exe",
-            "args": ["--permission-hook"],
+            "command": "sh",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/permission-hook.sh"
+            ],
+            "timeout": 140,
+            "onFailure": "continue"
+          },
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PLUGIN_ROOT}/hooks/permission-hook.mjs"
+            ],
             "timeout": 140,
             "onFailure": "continue"
           }
