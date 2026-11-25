@@ -109,8 +109,8 @@ All settings (key, wake phrases, language, voice, when to speak) are also in `/c
 
 ```bash
 ./ears/build.sh                                # build the Mac helper (needs the Xcode command line tools)
-./ears-windows/build.sh                        # build the Windows helper (needs the .NET 10 SDK; works on a Mac)
-./ears-windows/release.sh                      # publish that build on the releases page and point the plugin at it
+./ears-windows/build.sh                        # build the Windows helper to test it here (needs the .NET 10 SDK)
+./ears-windows/release.sh                      # GitHub builds, tests and publishes the Windows helper; the plugin is pointed at it
 claude --plugin-dir ./plugins/spokeline        # run Claude with the plugin from this folder
 (cd plugins/spokeline && claude plugin test)   # plugin tests
 ./ears-windows-tests/run.sh                    # Windows helper tests (run on a Mac too)

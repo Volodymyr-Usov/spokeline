@@ -1,0 +1,60 @@
+# Builds the Windows helper (SpokelineEars.exe) on GitHub's own Windows computers from the code on GitHub,
+# runs its tests, and publishes it on the releases page as ears-windows-<Version in SpokelineEars.csproj>.
+# The plugin downloads it from there the first time it starts on Windows and checks its SHA-256 fingerprint.
+# Started by ./ears-windows/release.sh, which then writes the fingerprint into the plugin.
+name: Windows helper
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Read the version and stop if it is already published
+        id: version
+        run: |
+          v="$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' ears-windows/SpokelineEars.csproj | head -1)"
+          [ -n "$v" ] || { echo "::error::No <Version> in ears-windows/SpokelineEars.csproj"; exit 1; }
+          if gh release view "ears-windows-$v" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "::error::ears-windows-$v is already published. Raise <Version> in ears-windows/SpokelineEars.csproj first."
+            exit 1
+          fi
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+
+      - name: Run the helper's tests
+        run: dotnet run --project ears-windows-tests/EarsTests.csproj
+
+      - name: Build
+        run: |
+          dotnet publish ears-windows/SpokelineEars.csproj -c Release -o out -nologo
+          rm -f out/*.pdb
+          ls -la out
+          [ -f out/SpokelineEars.exe ]
+
+      - name: Publish on the releases page
+        run: |
+          v="${{ steps.version.outputs.version }}"
+          sha="$(sha256sum out/SpokelineEars.exe | cut -d' ' -f1)"
+          size="$(stat -c %s out/SpokelineEars.exe)"
+          gh release create "ears-windows-$v" out/SpokelineEars.exe -R "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "Spokeline Ears for Windows $v" \
+            --notes "The Windows helper of Spokeline: it listens to the microphone and speaks the answers.
+          You do not need to download it by hand: the Spokeline plugin fetches it by itself the first time it starts on Windows.
+
+          SHA-256: $sha"
+          echo "Published ears-windows-$v: $size bytes, SHA-256 $sha" >> "$GITHUB_STEP_SUMMARY"

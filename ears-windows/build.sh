@@ -1,6 +1,7 @@
 #!/bin/bash
-# Builds Spokeline Ears for Windows (x64) into the plugin's bin/windows folder. That folder is not saved in
-# git: ./ears-windows/release.sh publishes the build as a download the plugin fetches on Windows.
+# Builds Spokeline Ears for Windows (x64) into the plugin's bin/windows folder, for testing on this computer:
+# the plugin uses a helper in that folder first. That folder is not saved in git. The helper people download is
+# built by GitHub itself: ./ears-windows/release.sh.
 # Works on macOS, Linux or Windows with the .NET SDK (10 or later). Run: ./ears-windows/build.sh
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
