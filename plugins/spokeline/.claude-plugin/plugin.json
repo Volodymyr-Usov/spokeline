@@ -1,7 +1,7 @@
 {
   "name": "spokeline",
   "displayName": "Spokeline",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Talk to Claude Code hands-free and hear short spoken answers back. Works in the terminal, the VS Code panel and the desktop app.",
   "author": { "name": "Spokeline", "url": "https://spokeline.dev" },
   "homepage": "https://spokeline.dev",

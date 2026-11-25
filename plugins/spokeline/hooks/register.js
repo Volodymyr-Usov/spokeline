@@ -593,7 +593,7 @@ async function startEars($) {
 // ears-windows/release.sh publishes a new build and rewrites the WIN_EARS line. A copy built on this
 // computer by ears-windows/build.sh (bin/windows/SpokelineEars.exe in the plugin folder) is used first.
 
-const WIN_EARS = { version: '0.1.0', sha256: 'a699f96d877585480f81fb173862ca366d6e41a2b85b3b38c68db98a7ba50809' }
+const WIN_EARS = { version: '0.1.1', sha256: 'f9446810ee9f2054e0447e3a6338569bf1364e469dfb5fce180f07b4edb5f6cf' }
 const WIN_EARS_URL = 'https://github.com/Volodymyr-Usov/spokeline/releases/download/ears-windows-' + WIN_EARS.version + '/SpokelineEars.exe'
 let isWin = false
 let pluginData = ''
