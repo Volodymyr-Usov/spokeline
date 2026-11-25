@@ -44,6 +44,11 @@ import {
   fixUnknownWords,
   splitSentences,
   NATURAL_VOICES,
+  IDLE_OFF_CHOICES,
+  idleOffMinutes,
+  idleOffLabel,
+  quietTooLong,
+  startMode,
 } from './text.js'
 
 const PLUGIN = 'spokeline'
@@ -55,7 +60,9 @@ let base = ''              // ~/.spokeline
 let sessionId = ''
 let cwd = ''
 let ready = false
-let mode = 'hands_free'    // off | push_to_talk | hands_free
+let mode = 'off'           // off | push_to_talk | hands_free; the start value comes from config.json (startMode)
+let idleOff = 15           // minutes of quiet before the microphone switches off (0: never), from config.json
+let activeMarkedAt = 0     // when this chat last wrote activeAt, so a busy conversation writes it once a minute
 
 let currentTurnId = null   // the main loop's running turn, so "stop" can end it
 let busy = false
@@ -90,7 +97,9 @@ function shouldSpeak() {
 
 export function register(on, options) {
   opts = options || {}
-  mode = typeof opts.listen === 'string' ? opts.listen : 'hands_free'
+  // A new chat or a reload no longer switches the microphone on: setup() takes the shared mode from
+  // config.json only when the voice was used within the quiet time; otherwise it starts off.
+  mode = 'off'
 
   on('session.start', async ($, e, next) => {
     // The microphone line is drawn as an own row above the prompt now: clear an old status line.
@@ -325,6 +334,12 @@ async function activate($) {
     await loadHelpers($)
     ready = true
 
+    // The microphone stays as the other chats have it if the voice was used within the quiet time
+    // (a /reload-plugins in the middle of a conversation); after a restart or a long break it starts off.
+    const shared = await readShared($)
+    idleOff = idleOffMinutes(shared)
+    mode = opts.listen === 'off' ? 'off' : startMode(shared, Date.now())
+    await dlog($, 'start: microphone ' + mode + (shared && shared.mode && shared.mode !== mode ? ' (was ' + shared.mode + ', quiet too long)' : ''))
     await writeConfig($, {})
     await heartbeat($)
     $.clock.every(300, async () => { await tick($) })
@@ -379,6 +394,40 @@ async function writeConfig($, extra) {
   try { await $.fs.write(configPath(), JSON.stringify(next, null, 2)) } catch (err) { $.ui.log('config not saved: ' + errText(err)) }
 }
 
+async function readShared($) {
+  try { return JSON.parse(await $.fs.read(configPath())) || null } catch { return null }
+}
+
+/// The voice was used (a request arrived, or listening was switched on): the quiet time starts again for
+/// every chat. Written at most once a minute while a conversation goes on, at once when `now` is asked.
+async function markActive($, now = false) {
+  if (!now && Date.now() - activeMarkedAt < 60000) return
+  activeMarkedAt = Date.now()
+  await writeConfig($, { activeAt: activeMarkedAt })
+}
+
+/// Every 2 s: take the microphone mode other chats or the tray menu set, and switch the microphone off
+/// when it has been quiet for longer than the chosen time.
+async function syncShared($) {
+  const shared = await readShared($)
+  if (!shared) return
+  idleOff = idleOffMinutes(shared)
+  const theirs = ['off', 'push_to_talk', 'hands_free'].includes(shared.mode) ? shared.mode : null
+  if (theirs && theirs !== mode) {
+    const switchedOn = mode === 'off'
+    mode = theirs
+    // Switched on from the tray menu or another chat after a long quiet: that is use, not a stale setting.
+    if (switchedOn && quietTooLong(shared, Date.now())) { await markActive($, true); shared.activeAt = activeMarkedAt }
+    lastMicRead = 0
+    if (menuOpen) $.ui.invalidate('ui.render')
+  }
+  if (mode !== 'off' && quietTooLong(shared, Date.now())) {
+    await dlog($, 'microphone off after ' + idleOff + ' quiet minutes')
+    await setListening($, 'off')
+    $.ui.toast('Spokeline: microphone off after ' + idleOff + ' quiet minutes. Turn it on again with /spokeline.')
+  }
+}
+
 async function heartbeat($) {
   if (!ready) return
   const info = {
@@ -401,6 +450,7 @@ async function heartbeat($) {
     heartbeat: Date.now(),
   }
   try { await $.fs.write(sessionPath(), JSON.stringify(info)) } catch { /* try again in 2 s */ }
+  try { await syncShared($) } catch (err) { $.ui.log('quiet check: ' + errText(err)) }
 }
 
 let startedAt = 0   // when Spokeline started in this chat: among chats with the same name, the newest is preferred
@@ -709,6 +759,7 @@ async function tick($) {
 }
 
 async function handle($, msg) {
+  if (msg.type === 'command' || msg.type === 'say') await markActive($)
   if (msg.type === 'command') return runCommand($, String(msg.command || ''))
   if (msg.type !== 'say') return
   const text = String(msg.text || '').trim()
@@ -1579,7 +1630,8 @@ function menuFacts(ears) {
 
 async function setListening($, chosen) {
   mode = chosen
-  await writeConfig($, {})
+  if (mode !== 'off') { activeMarkedAt = Date.now(); await writeConfig($, { activeAt: activeMarkedAt }) }
+  else await writeConfig($, {})
   if (mode !== 'off') await startEars($)
   lastMicRead = 0
   await refreshMic($)
@@ -1608,7 +1660,7 @@ function deviceOptions(list, chosen, def) {
 /// The menu: one row per setting. Tab (and in the terminal the arrow keys) moves between rows, Enter changes the
 /// row to its next choice (a Select took the arrow keys for itself, so you could not move past the first row),
 /// Esc closes. Each row also has a fixed number key (1 Listening, 2 Speak answers, 3 Voice, 4 Microphone,
-/// 5 Speakers, 6 Chat), the same number even when a row above it is missing.
+/// 5 Speakers, 6 Chat, 7 Switch off after), the same number even when a row above it is missing.
 /// The VS Code panel (2.1.331) moves between rows only with Tab: it does nothing with the arrow keys there,
 /// and it does not pass number keys on to a menu row either, so the hint at the bottom says so.
 function menuRows($, { Text, Button }, surface) {
@@ -1661,6 +1713,9 @@ function menuRows($, { Text, Button }, surface) {
       if (c) await switchChat($, c, { byVoice: false })
     })
   }
+  // How long the microphone may stay on with nobody using the voice (shared by all chats).
+  row('Switch off after', '7', IDLE_OFF_CHOICES.map(m => ({ value: m, label: idleOffLabel(m) })), idleOff,
+    async (v) => { idleOff = v; activeMarkedAt = Date.now(); await writeConfig($, { idleOffMinutes: v, activeAt: activeMarkedAt }) })
   if (ears && ears.target && ears.target !== sessionId) {
     rows.push(h(Button, { key: 'menu-here', plain: true, label: 'Send my voice to this chat',
       onPress: async () => { pendingDevice.chat = sessionId; await writeConfig($, { targetSessionId: sessionId }); lastMicRead = 0; $.ui.invalidate('ui.render') } }))

@@ -1,5 +1,5 @@
 import { expect, test } from 'claude-code/testing'
-import { cleanForSpeech, describeTool, isShortPlain, parseVoiceCommand, describeQuestion, chooseVoice, numberToWords, prepareForVoice, parseUnknownWords, fixUnknownWords, splitSentences, parseTalk, plainTalk, switchRequest, matchChat, chatKey, sayableTitle, noSuchChat, commandSuggestions, micLine, micHearing, micLevel, micWords, helperLine, historyRows } from '../hooks/text.js'
+import { cleanForSpeech, describeTool, isShortPlain, parseVoiceCommand, describeQuestion, chooseVoice, numberToWords, prepareForVoice, parseUnknownWords, fixUnknownWords, splitSentences, parseTalk, plainTalk, switchRequest, matchChat, chatKey, sayableTitle, noSuchChat, commandSuggestions, micLine, micHearing, micLevel, micWords, helperLine, historyRows, startMode, quietTooLong, idleOffMinutes, idleOffLabel } from '../hooks/text.js'
 
 test('code, tables, links and paths are not read aloud', async () => {
   const answer = [
@@ -261,4 +261,32 @@ test('the voice assistant answering in plain words is said as it is', async () =
   expect(plainTalk('Spokeline is a voice plugin for Claude Code.')).toEqual({ action: 'talk', say: 'Spokeline is a voice plugin for Claude Code.', task: '', background: false, chat: '' })
   expect(plainTalk('')).toBe(null)
   expect(plainTalk('{"action": "talk", "say": "cut off')).toBe(null)
+})
+
+test('a new chat or a restart starts with the microphone off unless the voice was used lately', async () => {
+  const now = 1_000_000_000
+  const min = 60000
+  expect(startMode(null, now)).toBe('off')
+  expect(startMode({ mode: 'hands_free' }, now)).toBe('off')                          // older file: no activeAt
+  expect(startMode({ mode: 'hands_free', activeAt: now - 20 * min }, now)).toBe('off')  // quiet for 20 minutes
+  expect(startMode({ mode: 'hands_free', activeAt: now - 5 * min }, now)).toBe('hands_free')
+  expect(startMode({ mode: 'push_to_talk', activeAt: now - 1 * min }, now)).toBe('push_to_talk')
+  expect(startMode({ mode: 'off', activeAt: now }, now)).toBe('off')
+  expect(startMode({ mode: 'hands_free', activeAt: now - 50 * min, idleOffMinutes: 60 }, now)).toBe('hands_free')
+  expect(startMode({ mode: 'hands_free', activeAt: 0, idleOffMinutes: 0 }, now)).toBe('hands_free')  // never
+})
+
+test('the microphone switches off after the chosen quiet minutes', async () => {
+  const now = 1_000_000_000
+  const min = 60000
+  expect(idleOffMinutes({})).toBe(15)
+  expect(idleOffMinutes({ idleOffMinutes: 30 })).toBe(30)
+  expect(idleOffMinutes({ idleOffMinutes: 0 })).toBe(0)
+  expect(idleOffMinutes({ idleOffMinutes: 7 })).toBe(15)        // not a menu choice
+  expect(quietTooLong({ activeAt: now - 14 * min }, now)).toBe(false)
+  expect(quietTooLong({ activeAt: now - 16 * min }, now)).toBe(true)
+  expect(quietTooLong({ activeAt: now - 16 * min, idleOffMinutes: 30 }, now)).toBe(false)
+  expect(quietTooLong({ activeAt: 0, idleOffMinutes: 0 }, now)).toBe(false)
+  expect(idleOffLabel(15)).toBe('15 quiet minutes')
+  expect(idleOffLabel(0)).toBe('never')
 })

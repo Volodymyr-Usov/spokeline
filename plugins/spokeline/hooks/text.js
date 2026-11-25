@@ -604,3 +604,34 @@ export const HELPER_STATUS_SYSTEM =
   'them. You get what the check is about and its latest steps, one per line. Say in ONE short sentence of at ' +
   'most 14 words what the background check is doing now, starting with "The background check", for example ' +
   '"The background check is reading the pricing page now." No file paths, no code, no quotes.'
+
+/**
+ * Switching off after quiet. Every chat with Spokeline shares config.json: `mode` (the microphone for all
+ * chats), `activeAt` (when the voice was last used: a request arrived, or listening was switched on) and
+ * `idleOffMinutes` (chosen in the /spokeline menu; 0 means never). A new chat or a restart starts with the
+ * microphone off unless it was used within that time, and a microphone left on switches off after it.
+ */
+export const IDLE_OFF_CHOICES = [5, 15, 30, 60, 0]
+export const DEFAULT_IDLE_OFF_MINUTES = 15
+
+export function idleOffMinutes(shared) {
+  const n = Number(shared && shared.idleOffMinutes)
+  return shared && shared.idleOffMinutes !== undefined && IDLE_OFF_CHOICES.includes(n) ? n : DEFAULT_IDLE_OFF_MINUTES
+}
+
+export function quietTooLong(shared, now) {
+  const minutes = idleOffMinutes(shared)
+  if (!minutes) return false
+  const at = Number(shared && shared.activeAt) || 0
+  return now - at > minutes * 60000
+}
+
+export function startMode(shared, now) {
+  const m = shared && shared.mode
+  if (m !== 'hands_free' && m !== 'push_to_talk') return 'off'
+  return quietTooLong(shared, now) ? 'off' : m
+}
+
+export function idleOffLabel(minutes) {
+  return minutes ? minutes + ' quiet minutes' : 'never'
+}

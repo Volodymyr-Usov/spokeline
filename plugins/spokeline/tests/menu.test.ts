@@ -32,6 +32,7 @@ test('each menu row has its fixed number key, on every surface', async ($, on) =
     expect((await ui.find({ type: 'Button', text: /Listening/ }))?.props.hotkey).toBe('1')
     expect((await ui.find({ type: 'Button', text: /Speak answers/ }))?.props.hotkey).toBe('2')
     expect((await ui.find({ type: 'Button', text: /Voice/ }))?.props.hotkey).toBe('3')
+    expect((await ui.find({ type: 'Button', text: /Switch off after/ }))?.props.hotkey).toBe('7')
     await ui.unmount()
   }
 })
@@ -43,6 +44,6 @@ test('the hint says Tab in VS Code and the arrows in the terminal', async ($, on
   expect(await vscode.find({ type: 'Text', text: /Arrows/ })).toBeUndefined()
   await vscode.unmount()
   const terminal = await $.ui.mount(PANE)
-  expect(await terminal.find({ type: 'Text', text: /^Arrows: move · Enter or 1-[3-6]: change · Esc: close$/ })).toBeTruthy()
+  expect(await terminal.find({ type: 'Text', text: /^Arrows: move · Enter or 1-7: change · Esc: close$/ })).toBeTruthy()
   await terminal.unmount()
 })

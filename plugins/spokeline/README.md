@@ -18,6 +18,9 @@ speech is turned into text on your own computer; no audio is stored or sent anyw
   happening.
 - **Control by voice.** "Stop", "repeat", "mute", "that's all" (microphone off), and "switch to *name*" to
   talk to another open chat.
+- **Off when you are not using it.** A new chat or a restart starts with the microphone off, unless your
+  voice was used in the last 15 minutes. After 15 quiet minutes it switches itself off (5, 15, 30, 60
+  minutes or never, in `/spokeline`).
 
 ### Examples
 
@@ -98,7 +101,8 @@ This section lists everything Spokeline sends, runs and writes, so you can check
 
 Only in `~/.spokeline` (Windows: `%USERPROFILE%\.spokeline`):
 
-- `config.json`: Spokeline's own settings, such as the listening mode and which chat your voice goes to;
+- `config.json`: Spokeline's own settings, such as the listening mode, which chat your voice goes to, when the
+  voice was last used and after how many quiet minutes the microphone switches off;
 - `sessions/`, `inbox/`, `live/`: one small status file per open chat, what you said while it waits to be
   sent, and the words while you are still speaking;
 - `permission/`: requests and spoken answers for "Approve by voice";
@@ -126,6 +130,8 @@ The hook is `hooks/permission-hook.sh` on the Mac, which runs the helper in this
 - Microphone sound is turned into text on your computer. It is never recorded or sent.
 - In hands-free mode, the microphone listens for the wake phrase while a Claude chat is open. In
   push-to-talk mode, it listens only while you hold the key.
+- The microphone is off when a new chat or your computer starts, unless your voice was used in the last
+  15 minutes. It switches itself off after 15 minutes with no voice request; change the time in `/spokeline`.
 - During a voice conversation, everything the microphone hears is sent as text, including other people in
   the room. Say "that's all" to end it. After 2 minutes of quiet, the wake phrase is needed again.
 
