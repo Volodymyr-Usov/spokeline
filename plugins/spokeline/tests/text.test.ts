@@ -263,15 +263,15 @@ test('the voice assistant answering in plain words is said as it is', async () =
   expect(plainTalk('{"action": "talk", "say": "cut off')).toBe(null)
 })
 
-test('a new chat or a restart starts with the microphone off unless the voice was used lately', async () => {
+test('a new chat or a restart starts in push to talk, and keeps hands free only if the voice was used lately', async () => {
   const now = 1_000_000_000
   const min = 60000
-  expect(startMode(null, now)).toBe('off')
-  expect(startMode({ mode: 'hands_free' }, now)).toBe('off')                          // older file: no activeAt
-  expect(startMode({ mode: 'hands_free', activeAt: now - 20 * min }, now)).toBe('off')  // quiet for 20 minutes
+  expect(startMode(null, now)).toBe('push_to_talk')                                     // first start
+  expect(startMode({ mode: 'hands_free' }, now)).toBe('push_to_talk')                   // older file: no activeAt
+  expect(startMode({ mode: 'hands_free', activeAt: now - 20 * min }, now)).toBe('push_to_talk')  // quiet for 20 minutes
   expect(startMode({ mode: 'hands_free', activeAt: now - 5 * min }, now)).toBe('hands_free')
-  expect(startMode({ mode: 'push_to_talk', activeAt: now - 1 * min }, now)).toBe('push_to_talk')
-  expect(startMode({ mode: 'off', activeAt: now }, now)).toBe('off')
+  expect(startMode({ mode: 'push_to_talk', activeAt: now - 90 * min }, now)).toBe('push_to_talk')  // push to talk never switches off
+  expect(startMode({ mode: 'off', activeAt: now }, now)).toBe('off')                    // off is a person's choice
   expect(startMode({ mode: 'hands_free', activeAt: now - 50 * min, idleOffMinutes: 60 }, now)).toBe('hands_free')
   expect(startMode({ mode: 'hands_free', activeAt: 0, idleOffMinutes: 0 }, now)).toBe('hands_free')  // never
 })

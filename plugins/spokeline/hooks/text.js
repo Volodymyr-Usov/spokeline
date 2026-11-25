@@ -608,8 +608,9 @@ export const HELPER_STATUS_SYSTEM =
 /**
  * Switching off after quiet. Every chat with Spokeline shares config.json: `mode` (the microphone for all
  * chats), `activeAt` (when the voice was last used: a request arrived, or listening was switched on) and
- * `idleOffMinutes` (chosen in the /spokeline menu; 0 means never). A new chat or a restart starts with the
- * microphone off unless it was used within that time, and a microphone left on switches off after it.
+ * `idleOffMinutes` (chosen in the /spokeline menu; 0 means never). Push to talk is the start mode: the microphone
+ * is closed until the key is held. Hands free is kept at a new chat or a restart only if the voice was used within
+ * that time, and it goes back to push to talk after it. Off stays off, since only a person chooses it.
  */
 export const IDLE_OFF_CHOICES = [5, 15, 30, 60, 0]
 export const DEFAULT_IDLE_OFF_MINUTES = 15
@@ -628,8 +629,9 @@ export function quietTooLong(shared, now) {
 
 export function startMode(shared, now) {
   const m = shared && shared.mode
-  if (m !== 'hands_free' && m !== 'push_to_talk') return 'off'
-  return quietTooLong(shared, now) ? 'off' : m
+  if (m === 'off') return 'off'
+  if (m === 'hands_free' && !quietTooLong(shared, now)) return m
+  return 'push_to_talk'
 }
 
 export function idleOffLabel(minutes) {

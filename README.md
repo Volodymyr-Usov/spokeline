@@ -58,13 +58,14 @@ Then open a new Claude chat.
 | Mode | How it works |
 |---|---|
 | Hands free | Say "Hey Spokeline" (or "Claude"), then your request, then pause. |
-| Push to talk | Hold **Control + Option + V** (Windows: **Ctrl + Alt + V**) while you speak, then let go. |
+| Push to talk (default) | Hold **Control + Option + V** (Windows: **Ctrl + Alt + V**) while you speak, then let go. |
 | Off | The microphone stays closed. |
 
-**Switching on and off:** a new chat, or a restart, starts with the microphone off, unless your voice was
-used in the last 15 minutes. Switch it on in the `/spokeline` menu (Listening). After 15 minutes with no
-voice request, the microphone switches itself off. Change the time, or choose "never", in the menu
-(Switch off after: 5, 15, 30 or 60 minutes).
+**Switching on and off:** a new chat, or a restart, starts in push to talk: the microphone opens only while
+you hold the key. Hands free stays on at a new chat or a restart only if your voice was used in the last 15
+minutes. After 15 minutes with no voice request, hands free switches itself off and push to talk takes over.
+Change the time, or choose "never", in the `/spokeline` menu (Switch off after: 5, 15, 30 or 60 minutes).
+Choose Off in the menu (Listening) to keep the microphone closed; it then stays off after a restart too.
 
 **Conversation:** after the first request you can keep talking without the wake phrase, and you can
 interrupt the voice by speaking. Say "that's all" to end the conversation and switch the microphone off.
@@ -96,8 +97,9 @@ All settings (key, wake phrases, language, voice, when to speak) are also in `/c
 - Sound from the microphone is turned into text on your computer. It is never recorded or sent.
 - In hands-free mode the microphone listens for the wake phrase while a Claude chat is open (your system's
   microphone indicator shows this). In push-to-talk mode it listens only while you hold the key.
-- The microphone is off when a new chat or your computer starts, unless your voice was used in the last
-  15 minutes, and it switches itself off after 15 minutes with no voice request (change this in `/spokeline`).
+- A new chat or a restart starts in push to talk. Hands free is kept only if your voice was used in the last
+  15 minutes, and it switches back to push to talk after 15 minutes with no voice request (change this in
+  `/spokeline`).
 - What you say is sent to Claude, just like typed text. The voice conversation and the spoken summaries
   use small Claude model calls in your own Claude Code session. Set "How answers are shortened" to
   **simple** in the settings to shorten answers without a model call.

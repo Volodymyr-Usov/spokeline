@@ -18,9 +18,9 @@ speech is turned into text on your own computer; no audio is stored or sent anyw
   happening.
 - **Control by voice.** "Stop", "repeat", "mute", "that's all" (microphone off), and "switch to *name*" to
   talk to another open chat.
-- **Off when you are not using it.** A new chat or a restart starts with the microphone off, unless your
-  voice was used in the last 15 minutes. After 15 quiet minutes it switches itself off (5, 15, 30, 60
-  minutes or never, in `/spokeline`).
+- **Closed when you are not using it.** A new chat or a restart starts in push to talk: the microphone opens
+  only while you hold the key. Hands free is kept only if your voice was used in the last 15 minutes, and it
+  switches back to push to talk after 15 quiet minutes (5, 15, 30, 60 minutes or never, in `/spokeline`).
 
 ### Examples
 
@@ -130,8 +130,9 @@ The hook is `hooks/permission-hook.sh` on the Mac, which runs the helper in this
 - Microphone sound is turned into text on your computer. It is never recorded or sent.
 - In hands-free mode, the microphone listens for the wake phrase while a Claude chat is open. In
   push-to-talk mode, it listens only while you hold the key.
-- The microphone is off when a new chat or your computer starts, unless your voice was used in the last
-  15 minutes. It switches itself off after 15 minutes with no voice request; change the time in `/spokeline`.
+- A new chat or a restart starts in push to talk. Hands free is kept only if your voice was used in the last
+  15 minutes, and it switches back to push to talk after 15 minutes with no voice request; change the time in
+  `/spokeline`.
 - During a voice conversation, everything the microphone hears is sent as text, including other people in
   the room. Say "that's all" to end it. After 2 minutes of quiet, the wake phrase is needed again.
 

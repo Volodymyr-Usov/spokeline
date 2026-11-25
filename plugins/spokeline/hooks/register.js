@@ -406,8 +406,8 @@ async function markActive($, now = false) {
   await writeConfig($, { activeAt: activeMarkedAt })
 }
 
-/// Every 2 s: take the microphone mode other chats or the tray menu set, and switch the microphone off
-/// when it has been quiet for longer than the chosen time.
+/// Every 2 s: take the microphone mode other chats or the tray menu set, and switch hands free back to
+/// push to talk when it has been quiet for longer than the chosen time.
 async function syncShared($) {
   const shared = await readShared($)
   if (!shared) return
@@ -421,10 +421,11 @@ async function syncShared($) {
     lastMicRead = 0
     if (menuOpen) $.ui.invalidate('ui.render')
   }
-  if (mode !== 'off' && quietTooLong(shared, Date.now())) {
-    await dlog($, 'microphone off after ' + idleOff + ' quiet minutes')
-    await setListening($, 'off')
-    $.ui.toast('Spokeline: microphone off after ' + idleOff + ' quiet minutes. Turn it on again with /spokeline.')
+  if (mode === 'hands_free' && quietTooLong(shared, Date.now())) {
+    await dlog($, 'hands free off after ' + idleOff + ' quiet minutes: push to talk')
+    await setListening($, 'push_to_talk')
+    const key = typeof opts.hotkey === 'string' && opts.hotkey ? opts.hotkey : 'ctrl+option+v'
+    $.ui.toast('Spokeline: hands free off after ' + idleOff + ' quiet minutes. Hold ' + key + ' to talk, or turn hands free on in /spokeline.')
   }
 }
 

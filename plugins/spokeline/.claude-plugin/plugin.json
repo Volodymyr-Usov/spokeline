@@ -14,7 +14,7 @@
       "title": "Listening mode",
       "description": "off: never use the microphone. push_to_talk: hold the hotkey while you speak. hands_free: say the wake phrase, then your request.",
       "options": ["off", "push_to_talk", "hands_free"],
-      "default": "hands_free"
+      "default": "push_to_talk"
     },
     "hotkey": {
       "type": "string",
